@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.infinispan.grpc";
+option java_outer_classname = "CacheProto";
+option objc_class_prefix = "HLW";
+
+service Cache {
+  rpc get (KeyMsg) returns (ValueMsg) {}
+  rpc put (KeyValuePairMsg) returns (ValueMsg) {}
+}
+
+message KeyMsg {
+  string name = 1;
+}
+
+message ValueMsg {
+  string message = 1;
+}
+
+message KeyValuePairMsg {
+  KeyMsg key = 1;
+  ValueMsg value = 2;
+}
