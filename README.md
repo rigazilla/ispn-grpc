@@ -11,5 +11,15 @@ mvn package should do everything for you. Running the ServerNode.main and the Ca
 
 You need to build protobuf and grpc for you platform, the cmake will do the rest (as long as you adapt the CMakeLists.txt) and you'll get the c++ client (cache_client executable). Run it against the java server.
 
+This is my build chain:
+
+cd cpp
+mkdir build
+cd build
+gRPC_CPP_PLUGIN_EXECUTABLE=/usr/local/bin/grpc_cpp_plugin LD_LIBRARY_PATH=/opt/local/lib/ cmake .. -DCMAKE_FIND_ROOT_PATH=/opt/local
+cmake --build .
+
+specific settings are needed to point a specific grpc protobuf version. Try to figure out how things works for now. More info will come.
+
 
 
