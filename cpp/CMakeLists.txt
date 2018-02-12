@@ -16,6 +16,10 @@ endif()
 find_package(Protobuf REQUIRED)
 message(STATUS "Using protobuf ${protobuf_VERSION}")
 
+find_library(GRPC++_UNSECURE_LIBRARY NAME grpc++_unsecure HINTS "/opt/local/lib")
+find_library(GRPC_LIBRARY NAME grpc HINTS "/opt/local/lib")
+message(STATUS "Using grpc++_unsecure ${GRPC++_UNSECURE_LIBRARY}")
+message(STATUS "Using grpc ${GRPC_LIBRARY}")
 # {Protobuf,PROTOBUF}_FOUND is defined based on find_package type ("MODULE" vs "CONFIG").
 # For "MODULE", the case has also changed between cmake 3.5 and 3.6.
 # We use the legacy uppercase version for *_LIBRARIES AND *_INCLUDE_DIRS variables
@@ -40,8 +44,6 @@ endif()
 message(STATUS "Using gRPC ${gRPC_VERSION}")
 
 # gRPC C++ plugin
-get_target_property(gRPC_CPP_PLUGIN_EXECUTABLE gRPC::grpc_cpp_plugin
-    IMPORTED_LOCATION_RELEASE)
 
 # Proto file
 get_filename_component(hw_proto "../src/main/proto/cache.proto" ABSOLUTE)
@@ -55,7 +57,7 @@ add_custom_command(
       OUTPUT "${hw_grpc_srcs}" "${hw_grpc_hdrs}"
       COMMAND ${_PROTOBUF_PROTOC}
       ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}" -I "${hw_proto_path}"
-        --plugin=protoc-gen-grpc="/usr/local/bin/grpc_cpp_plugin"
+        --plugin=protoc-gen-grpc="/opt/local/bin/grpc_cpp_plugin"
         "${hw_proto}"
       DEPENDS "${hw_proto}")
 
@@ -70,6 +72,7 @@ foreach(_target
     ${hw_grpc_srcs})
   target_link_libraries(${_target}
     ${_PROTOBUF_LIBPROTOBUF}
-    grpc++_unsecure
-    grpc)
+    ${GRPC++_UNSECURE_LIBRARY}
+    ${GRPC_LIBRARY}
+    )
 endforeach()
