@@ -1,14 +1,18 @@
 package org.infinispan.experimental;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.infinispan.Cache;
 import org.infinispan.grpc.KeyMsg;
 import org.infinispan.grpc.KeyValuePairMsg;
+import org.infinispan.grpc.TopologyInfoMsg;
 import org.infinispan.grpc.ValueMsg;
+import org.infinispan.grpc.VoidMsg;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.remoting.transport.Address;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -29,6 +33,18 @@ public class ServerNode extends org.infinispan.grpc.CacheGrpc.CacheImplBase
    private static EmbeddedCacheManager cacheManager;
    private static Cache<Object,Object> cache;
 
+   
+   @Override
+   public void topologyGetInfo(VoidMsg request, StreamObserver<TopologyInfoMsg> responseObserver) {
+      List<Address> addressList = cacheManager.getMembers();
+      TopologyInfoMsg retVal = TopologyInfoMsg.getDefaultInstance();
+      responseObserver.onNext(retVal);
+      responseObserver.onCompleted();
+   }
+   
+   public void topologyGetServerList()
+   {
+   }
    @Override
    public void get(KeyMsg request, StreamObserver<ValueMsg> responseObserver) {
       Object oVal = cache.get(request);

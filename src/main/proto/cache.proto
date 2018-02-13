@@ -6,6 +6,7 @@ option java_outer_classname = "CacheProto";
 option objc_class_prefix = "HLW";
 
 service Cache {
+  rpc topologyGetInfo (VoidMsg) returns (TopologyInfoMsg) {}
   rpc get (KeyMsg) returns (ValueMsg) {}
   rpc put (KeyValuePairMsg) returns (ValueMsg) {}
 }
@@ -21,4 +22,11 @@ message ValueMsg {
 message KeyValuePairMsg {
   KeyMsg key = 1;
   ValueMsg value = 2;
+}
+
+message VoidMsg {
+}
+
+message TopologyInfoMsg {
+  repeated string serverId = 1;
 }

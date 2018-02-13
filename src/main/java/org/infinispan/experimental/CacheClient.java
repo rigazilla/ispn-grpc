@@ -5,11 +5,12 @@ import java.util.concurrent.TimeUnit;
 import org.infinispan.grpc.CacheGrpc;
 import org.infinispan.grpc.KeyMsg;
 import org.infinispan.grpc.KeyValuePairMsg;
+import org.infinispan.grpc.TopologyInfoMsg;
 import org.infinispan.grpc.ValueMsg;
+import org.infinispan.grpc.VoidMsg;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.StatusRuntimeException;
 
 public class CacheClient {
 
@@ -40,12 +41,18 @@ public class CacheClient {
        response = blockingStub.get(key);
        return response;
    }
-   
+
    public ValueMsg put(KeyValuePairMsg pair)
    {
       ValueMsg response;
       response = blockingStub.put(pair);
       return response;
+   }
+
+   public TopologyInfoMsg topologyGetInfo()
+   {
+      VoidMsg request = VoidMsg.getDefaultInstance();
+      return blockingStub.topologyGetInfo(request);
    }
    
    public static void main(String[] args) throws InterruptedException {
@@ -61,6 +68,8 @@ public class CacheClient {
         KeyValuePairMsg pair = KeyValuePairMsg.newBuilder().setValue(value).setKey(key).build();
         client.put(pair);
         ValueMsg retVal = client.get(key);
+        // With the topology info client must setup an appropriate routing policy
+        TopologyInfoMsg topologyInfo = client.topologyGetInfo();
         System.out.println("Value "+retVal.getMessage()+" for key "+key.getName());
       } finally {
         client.shutdown();
