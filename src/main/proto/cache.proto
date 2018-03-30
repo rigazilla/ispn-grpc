@@ -11,12 +11,27 @@ service Cache {
   rpc put (KeyValuePairMsg) returns (ValueMsg) {}
 }
 
+message ComplexKey {
+    string name = 1;
+    int32 domainId = 2;
+}
+
+message ComplexValue {
+    string message = 1;
+    float domainValue = 2;
+}
 message KeyMsg {
+    oneof KeyMsgOneOf {
   string name = 1;
+  ComplexKey complexName= 2;
+    }
 }
 
 message ValueMsg {
+    oneof ValueMsgOneOf {
   string message = 1;
+  ComplexValue complexMessage = 2;
+    }
 }
 
 message KeyValuePairMsg {

@@ -48,7 +48,13 @@ public class ServerNode extends org.infinispan.grpc.CacheGrpc.CacheImplBase
    @Override
    public void get(KeyMsg request, StreamObserver<ValueMsg> responseObserver) {
       Object oVal = cache.get(request);
-      ValueMsg vmVal = ValueMsg.newBuilder((ValueMsg)oVal).build();
+      ValueMsg vmVal;
+      if (oVal != null) {
+          vmVal = ValueMsg.newBuilder((ValueMsg)oVal).build();
+      }
+      else {
+          vmVal = ValueMsg.newBuilder().build();         
+      }
       responseObserver.onNext(vmVal);
       responseObserver.onCompleted();
    }
