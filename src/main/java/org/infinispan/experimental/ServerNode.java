@@ -14,6 +14,11 @@ import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.remoting.transport.Address;
 
+import com.google.protobuf.Message;
+import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Descriptors.OneofDescriptor;
+import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -22,18 +27,20 @@ public class ServerNode extends org.infinispan.grpc.CacheGrpc.CacheImplBase
 {
    @Override
    public void put(KeyValuePairMsg request, StreamObserver<ValueMsg> responseObserver) {
-      // TODO Auto-generated method stub
-      Object obj = cache.put(request.getKey(), request.getValue());
-      ValueMsg vmVal = obj!=null ? ValueMsg.newBuilder((ValueMsg)obj).build() : ValueMsg.newBuilder().setMessage("null").build();
+      OneofDescriptor ood = (OneofDescriptor) KeyMsg.getDescriptor().getOneofs().toArray()[0];
+      FieldDescriptor fd = request.getKey().getOneofFieldDescriptor(ood);
+      Object oKey = request.getKey().getField(fd);
+
+      OneofDescriptor oodv = (OneofDescriptor) ValueMsg.getDescriptor().getOneofs().toArray()[0];
+      FieldDescriptor fdv = request.getValue().getOneofFieldDescriptor(oodv);
+      Object oVal = request.getValue().getField(fdv);
+
+      Object obj = cache.put(oKey, oVal);
+      ValueMsg vmVal = setValueMsgOneOf(oodv, obj);
       responseObserver.onNext(vmVal);
       responseObserver.onCompleted();
    }
 
-
-   private static EmbeddedCacheManager cacheManager;
-   private static Cache<Object,Object> cache;
-
-   
    @Override
    public void topologyGetInfo(VoidMsg request, StreamObserver<TopologyInfoMsg> responseObserver) {
       List<Address> addressList = cacheManager.getMembers();
@@ -45,21 +52,48 @@ public class ServerNode extends org.infinispan.grpc.CacheGrpc.CacheImplBase
    public void topologyGetServerList()
    {
    }
+
    @Override
    public void get(KeyMsg request, StreamObserver<ValueMsg> responseObserver) {
-      Object oVal = cache.get(request);
-      ValueMsg vmVal;
-      if (oVal != null) {
-          vmVal = ValueMsg.newBuilder((ValueMsg)oVal).build();
-      }
-      else {
-          vmVal = ValueMsg.newBuilder().build();         
-      }
+      OneofDescriptor ood = (OneofDescriptor) KeyMsg.getDescriptor().getOneofs().toArray()[0];
+      OneofDescriptor oodv = (OneofDescriptor) ValueMsg.getDescriptor().getOneofs().toArray()[0];
+      FieldDescriptor fd = request.getOneofFieldDescriptor(ood);
+      Object oKey = request.getField(fd);
+      Object oVal = cache.get(oKey);
+      ValueMsg vmVal = setValueMsgOneOf(oodv, oVal);
       responseObserver.onNext(vmVal);
       responseObserver.onCompleted();
    }
 
+   private ValueMsg setValueMsgOneOf(OneofDescriptor oodv, Object obj) {
+      ValueMsg vmVal = null;
+      if (obj != null) {
+         List<FieldDescriptor> lfd = oodv.getFields();
+         for (FieldDescriptor fieldDescriptor : lfd) {
+             if (fieldDescriptor.getJavaType() == JavaType.MESSAGE) {
+                 Message.Builder b = ValueMsg.newBuilder().getFieldBuilder(fieldDescriptor);
+                 if (b.getDefaultInstanceForType().getClass() == obj.getClass()) {
+                     vmVal = ValueMsg.newBuilder().setField(fieldDescriptor, obj).build();
+                     break;
+                  }
+             }
+             else {
+                 if (fieldDescriptor.getDefaultValue().getClass() == obj.getClass()) {
+                     vmVal = ValueMsg.newBuilder().setField(fieldDescriptor, obj).build();
+                     break;
+                 }
+             }
+         }
+      }
+      if (vmVal == null) {
+        vmVal = ValueMsg.newBuilder().build();
+      }
+      return vmVal;
+   }
+
    private Server server;
+   private static EmbeddedCacheManager cacheManager;
+   private static Cache<Object,Object> cache;
 
    private void start() throws IOException {
      /* The port on which the server should run */
