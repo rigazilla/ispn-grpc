@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+// Defining the application data model
+// all the data types need by the application must be defined here
+message ComplexKey {
+    string name = 1;
+    int32 domainId = 2;
+}
+
+message ComplexValue {
+    string message = 1;
+    float domainValue = 2;
+}
+
+// Defining the RPC message arguments
+
+// KeyMsg must enlist all the data types the application uses as key
+message KeyMsg {
+    oneof KeyMsgOneOf {
+  string name = 1;
+  ComplexKey complexName= 2;
+    }
+}
+
+// KeyMsg must enlist all the data types the application uses as value
+message ValueMsg {
+    oneof ValueMsgOneOf {
+  string message = 1;
+  ComplexValue complexMessage = 2;
+    }
+}
+

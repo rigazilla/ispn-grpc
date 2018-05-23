@@ -11,37 +11,19 @@ service Cache {
   rpc put (KeyValuePairMsg) returns (ValueMsg) {}
 }
 
-message ComplexKey {
-    string name = 1;
-    int32 domainId = 2;
+// Definition for some standard data types
+message TopologyInfoMsg {
+  repeated string serverId = 1;
 }
 
-message ComplexValue {
-    string message = 1;
-    float domainValue = 2;
-}
-message KeyMsg {
-    oneof KeyMsgOneOf {
-  string name = 1;
-  ComplexKey complexName= 2;
-    }
+message VoidMsg {
 }
 
-message ValueMsg {
-    oneof ValueMsgOneOf {
-  string message = 1;
-  ComplexValue complexMessage = 2;
-    }
-}
+// Importing the cache model types
+import "cache-types.proto";
 
 message KeyValuePairMsg {
   KeyMsg key = 1;
   ValueMsg value = 2;
 }
 
-message VoidMsg {
-}
-
-message TopologyInfoMsg {
-  repeated string serverId = 1;
-}
