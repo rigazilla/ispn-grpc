@@ -75,8 +75,8 @@ func main() {
     print("first put", keyK1, r_put1);
 
     // put complex key value (k2,2),(v2,3.14) entry into the cache
-    keyK2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {"k2",2}}};
-    valV2 :=  &pi.ValueMsg{ValueMsgOneOf: &pi.ValueMsg_ComplexMessage{ &pi.ComplexValue {"v2",3.14}}};
+    keyK2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {Name: "k2",DomainId: 2}}};
+    valV2 :=  &pi.ValueMsg{ValueMsgOneOf: &pi.ValueMsg_ComplexMessage{ &pi.ComplexValue {Message: "v2",DomainValue: 3.14}}};
     pair2 := &pi.KeyValuePairMsg{ Key : keyK2, Value : valV2 };
     r_put2, err_put2:= ispnClient.Put(ctx, pair2);
 	if err_put2 != nil {
@@ -94,8 +94,8 @@ func main() {
 	}
     print("first put go:", keyGo_K1, r_putGo_1);
 
-    keyGo_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {"go_k2",2}}};
-    valGo_V2 :=  &pi.ValueMsg{ValueMsgOneOf: &pi.ValueMsg_ComplexMessage{ &pi.ComplexValue {"go_v2",3.14}}};
+    keyGo_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {Name: "go_k2",DomainId: 2}}};
+    valGo_V2 :=  &pi.ValueMsg{ValueMsgOneOf: &pi.ValueMsg_ComplexMessage{ &pi.ComplexValue {Message: "go_v2",DomainValue: 3.14}}};
     pairGo_2 := &pi.KeyValuePairMsg{ Key : keyGo_K2, Value : valGo_V2 };
     r_putGo_2, err_putGo_2:= ispnClient.Put(ctx, pairGo_2);
 	if err_putGo_2 != nil {
@@ -119,7 +119,7 @@ func main() {
 	    }
         print("get C++", keyCpp_K1, r_getCpp_K1);
 
-        keyCpp_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {"c++_k2",2}}};
+        keyCpp_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {Name: "c++_k2",DomainId: 2}}};
         r_getCpp_K2, err_getCpp_2:= ispnClient.Get(ctx, keyCpp_K2);
 	    if err_getCpp_2 != nil {
 	        log.Fatalf("Error in calling put: %v", err_getCpp_2)
@@ -134,7 +134,7 @@ func main() {
 	    }
         print("get Java", keyJava_K1, r_getJava_K1);
 
-        keyJava_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {"java_k2",2}}};
+        keyJava_K2 :=  &pi.KeyMsg{KeyMsgOneOf: &pi.KeyMsg_ComplexName{ &pi.ComplexKey {Name: "java_k2",DomainId: 2}}};
         r_getJava_K2, err_getJava_2:= ispnClient.Get(ctx, keyJava_K2);
 	    if err_getJava_2 != nil {
 	        log.Fatalf("Error in calling put: %v", err_getJava_2)
