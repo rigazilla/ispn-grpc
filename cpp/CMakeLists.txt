@@ -61,15 +61,32 @@ add_custom_command(
         "${hw_proto}"
       DEPENDS "${hw_proto}")
 
+get_filename_component(hw_proto_types "../src/main/proto/cache-types.proto" ABSOLUTE)
+get_filename_component(hw_proto_path_types "${hw_proto_types}" PATH)
+
+# Generated sources
+protobuf_generate_cpp(hw_proto_types_srcs hw_proto_types_hdrs "${hw_proto_types}")
+set(hw_grpc_types_srcs "${CMAKE_CURRENT_BINARY_DIR}/cache-types.grpc.pb.cc")
+set(hw_grpc_types_hdrs "${CMAKE_CURRENT_BINARY_DIR}/cache-types.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${hw_grpc_types_srcs}" "${hw_grpc_types_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}" -I "${hw_proto_path}"
+        --plugin=protoc-gen-grpc="/opt/local/bin/grpc_cpp_plugin"
+        "${hw_proto_types}"
+      DEPENDS "${hw_proto_types}")
+
 # Generated include directory
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 # Targets 
 foreach(_target
-  cache_client)
+  cache_client sample)
   add_executable(${_target} "${_target}.cc"
     ${hw_proto_srcs}
-    ${hw_grpc_srcs})
+    ${hw_grpc_srcs}
+    ${hw_proto_types_srcs}
+    ${hw_grpc_types_srcs})
   target_link_libraries(${_target}
     ${_PROTOBUF_LIBPROTOBUF}
     ${GRPC++_UNSECURE_LIBRARY}

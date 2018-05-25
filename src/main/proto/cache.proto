@@ -2,8 +2,6 @@ syntax = "proto3";
 
 option java_multiple_files = true;
 option java_package = "org.infinispan.grpc";
-option java_outer_classname = "CacheProto";
-option objc_class_prefix = "HLW";
 
 service Cache {
   rpc topologyGetInfo (VoidMsg) returns (TopologyInfoMsg) {}
@@ -20,7 +18,7 @@ message VoidMsg {
 }
 
 // Importing the cache model types
-import "cache-types.proto";
+import public "cache-types.proto";
 
 message KeyValuePairMsg {
   KeyMsg key = 1;

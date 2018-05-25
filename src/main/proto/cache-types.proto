@@ -1,4 +1,6 @@
 syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "org.infinispan.grpc";
 
 // Defining the application data model
 // all the data types need by the application must be defined here
@@ -10,6 +12,11 @@ message ComplexKey {
 message ComplexValue {
     string message = 1;
     float domainValue = 2;
+}
+
+message NewValueType {
+    repeated string cities = 1;
+    repeated int32 itemsCode = 2;
 }
 
 // Defining the RPC message arguments
@@ -27,6 +34,7 @@ message ValueMsg {
     oneof ValueMsgOneOf {
   string message = 1;
   ComplexValue complexMessage = 2;
+  NewValueType newValue = 3;
     }
 }
 
