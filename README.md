@@ -50,6 +50,6 @@ The Go example should easily work in this way:
 - go get -u google.golang.org/grpc
 - install protoc compiler (3.5.0+)
 - go get -u github.com/golang/protobuf/protoc-gen-go
-- PATH=$GOPATH/bin/:$PATH protoc -I$PWD/src/main/proto  cache.proto --go_out=plugins=grpc:go/src/ispn/
+- PATH=$GOPATH/bin/:$PATH protoc -I$PWD/src/main/proto  cache_client.proto --go_out=plugins=grpc:go/src/ispn/
 - cd go
 - GOPATH=$PWD:$GOPATH go run main.go
