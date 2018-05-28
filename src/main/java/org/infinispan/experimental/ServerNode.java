@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.infinispan.Cache;
-import org.infinispan.grpc.KeyMsg;
-import org.infinispan.grpc.KeyValuePairMsg;
-import org.infinispan.grpc.TopologyInfoMsg;
-import org.infinispan.grpc.ValueMsg;
-import org.infinispan.grpc.VoidMsg;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -22,8 +17,9 @@ import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
+import ispn.*;
 
-public class ServerNode extends org.infinispan.grpc.CacheGrpc.CacheImplBase
+public class ServerNode extends ispn.CacheGrpc.CacheImplBase
 {
    @Override
    public void put(KeyValuePairMsg request, StreamObserver<ValueMsg> responseObserver) {

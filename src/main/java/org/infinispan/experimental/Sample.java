@@ -2,18 +2,10 @@ package org.infinispan.experimental;
 
 import java.util.concurrent.TimeUnit;
 
-
-import org.infinispan.grpc.CacheGrpc;
-import org.infinispan.grpc.KeyMsg;
-import org.infinispan.grpc.ComplexKey;
-import org.infinispan.grpc.ComplexValue;
-import org.infinispan.grpc.KeyValuePairMsg;
-import org.infinispan.grpc.TopologyInfoMsg;
-import org.infinispan.grpc.ValueMsg;
-import org.infinispan.grpc.VoidMsg;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
+import ispn.*;
 
 public class Sample {
 

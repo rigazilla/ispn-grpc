@@ -1,7 +1,11 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "org.infinispan.grpc";
+
+package ispn;
+
+// Importing the cache model types
+import public "cache-types.proto";
 
 service Cache {
   rpc topologyGetInfo (VoidMsg) returns (TopologyInfoMsg) {}
@@ -16,9 +20,6 @@ message TopologyInfoMsg {
 
 message VoidMsg {
 }
-
-// Importing the cache model types
-import public "cache-types.proto";
 
 message KeyValuePairMsg {
   KeyMsg key = 1;

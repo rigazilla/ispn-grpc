@@ -27,7 +27,8 @@
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using ::Cache;
+
+using namespace ispn;
 
 class CacheClient {
 public:
